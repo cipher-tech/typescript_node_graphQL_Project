@@ -1,0 +1,81 @@
+"""
+  Project Schema
+"""
+scalar DateTime
+
+enum UserRole{
+  user
+  admin
+}
+enum Status{
+  verified
+  unverified
+}
+enum Plans{
+  beginners
+  standard
+  advance
+  business
+  none
+}
+
+type User {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  phone_no: String!
+  password: String!
+  status: String!
+  coin_address: String
+  wallet_balance: Int
+  plan: Plans
+  role: UserRole!
+  slug: String!
+  auth_token: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Plan{
+  id: Int!
+  name: String!
+  slug: String!
+  rate: Int!
+  from: Int!
+  to: Int!
+  duration: Int!
+  user_id: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input Register{
+  first_name: String!
+  last_name: String!
+  email: String!
+  phone_no: String!
+  password: String!
+  plan: Plans!
+  coin_address: String
+}
+
+input Login{
+  email: String!
+  password: String!
+}
+
+type UserToken{
+  auth_token: String
+  message: String!
+}
+
+type Query {
+  helloWorld(name: String): String!
+  getUsers: [User!]!
+}
+
+type Mutation {
+  register(input: Register!): User!
+  login(input: Login!): UserToken!
+}
