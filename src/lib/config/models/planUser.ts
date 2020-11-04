@@ -67,7 +67,7 @@ export const PlanUsers = sequelize.define<IPlanUser, IPlanUsers>("PlanUsers", {
     },
     earnings: {
         type: new Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: !false,
     },
 })
 
