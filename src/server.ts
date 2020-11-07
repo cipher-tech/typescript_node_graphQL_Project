@@ -7,20 +7,22 @@ import compression from 'compression'
 import cors from 'cors'
 import Cookies from "cookies";
 
+
 import schema from './schema'
 import { userRouter } from "./lib/routes";
 import { UserService } from "./middleware/auth";
+import { modelAssociation } from "./lib/config/models/modelReletionships";
 
 const app = express()
 const server = new ApolloServer({
     schema,
     validationRules: [depthLimit(7)],
-    context: ({req, res} ) => {
+    context: async ({req, res} ) => {
         const cookies = new Cookies(req, res)
         const token = cookies.get("auth_token")
         console.log('token>>>>', token);
         
-        const user = new UserService().verifyToken(token!)
+        const user = await new UserService().verifyToken(token!)
         return {req,res, user, cookies }
     }
 });
@@ -45,3 +47,5 @@ httpServer.listen(
     (): void => console.log(`\n  GraphQL server is now running 
     on http://localhost:8000/graphql`)
 )
+
+modelAssociation()

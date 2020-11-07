@@ -1,7 +1,17 @@
 import * as Sequelize from "sequelize"
-import { sequelize } from '../database/database'
-import { planNames } from "./plan"
+import { Association, HasOneGetAssociationMixin, HasOneCreateAssociationMixin } from 'sequelize';
 
+import { sequelize } from '../database/database'
+import { Deposit } from "./deposit"
+import { History } from "./history"
+import { Plan, planNames } from "./plan"
+import { PlanUsers } from "./planUser"
+import { Withdrawal } from "./withdrawal"
+
+const config = {
+    tableName: 'users',
+    sequelize: sequelize,
+  };
 export enum userStatus {
     verified = "verified",
     unverified = "unverified"
@@ -24,25 +34,25 @@ export interface UserAddModel {
     createdAt?: Date;
     updatedAt?: Date;
 }
-export interface UserModel extends Sequelize.Model {
-    id?: number;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    phone_no?: string;
-    password?: string | undefined;
-    status?: userStatus;
-    coin_address?: string;
-    wallet_balance?: number;
-    plan?: planNames;
-    role?: string;
-    slug?: string;
-    auth_token?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
 
-export const User = sequelize.define<UserModel, UserAddModel>('User', {
+export class User extends Sequelize.Model{
+   public id?: number;
+   public first_name?: string;
+   public last_name?: string;
+   public email?: string;
+   public phone_no?: string;
+   public password?: string | undefined;
+   public status?: userStatus;
+   public coin_address?: string;
+   public wallet_balance?: number;
+   public plan?: planNames;
+   public role?: string;
+   public slug?: string;
+   public auth_token?: string;
+   public readonly createdAt?: Date;
+   public readonly updatedAt?: Date;
+}
+User.init({
     id: {
         type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -96,6 +106,8 @@ export const User = sequelize.define<UserModel, UserAddModel>('User', {
         type: new Sequelize.STRING(128),
         allowNull: true,
     },
-})
+}, 
+config)
 
-// User.sync().then(() => console.log('Users table created'))
+
+User.sync().then(() => console.log('Users table created'))

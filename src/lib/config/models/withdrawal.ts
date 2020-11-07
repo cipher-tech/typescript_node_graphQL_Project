@@ -1,6 +1,7 @@
 import * as Sequelize from "sequelize"
 import {sequelize} from '../database/database'
 import { planNames } from "./plan"
+import { User } from "./user"
 
 export enum withdrawalStatus{
     pending = "pending",

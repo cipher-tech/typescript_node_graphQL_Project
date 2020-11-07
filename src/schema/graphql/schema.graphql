@@ -49,7 +49,15 @@ type Plan{
   createdAt: DateTime!
   updatedAt: DateTime!
 }
-
+type UserToken{
+  auth_token: String
+  message: String!
+}
+type Response{
+  message: String
+  status: String
+  referenceId: String!
+}
 input Register{
   first_name: String!
   last_name: String!
@@ -64,18 +72,26 @@ input Login{
   email: String!
   password: String!
 }
+input Id{
+ id: ID!
+}
 
-type UserToken{
-  auth_token: String
-  message: String!
+input DepositRequest{
+  userId: ID!
+  amount: Int!
+  plan: String!
+ 
 }
 
 type Query {
   helloWorld(name: String): String!
+  getUser: User!
   getUsers: [User!]!
 }
 
 type Mutation {
   register(input: Register!): User!
-  login(input: Login!): UserToken!
+  login(input: Login!): User!
+  depositRequest(input: DepositRequest!): Response!
+  activateDeposit(input: Id): Response!
 }

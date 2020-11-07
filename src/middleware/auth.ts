@@ -25,7 +25,7 @@ export class UserService {
 
     private static _user: any
 
-    static get user() {
+    static get user(): UserAddModel {
         return UserService._user
     }
 
@@ -65,7 +65,7 @@ export class UserService {
                     cookies.set("auth_token", token, {
                         httpOnly: true,
                         sameSite: "lax",
-                        maxAge: 60 * 60 * 24 * 14,
+                        maxAge: 1000*60*60*24*30,
                         secure: false
                     })
                     return user.get()
@@ -76,13 +76,16 @@ export class UserService {
 
     verifyToken(token: string) {
         return new Promise((resolve, reject) => {
-            jwt.verify(token, this._jwtSecret, (err, decoded: any) => {
+            jwt.verify(token, this._jwtSecret, async (err, decoded: any) => {
                 if (err) {
                     resolve(false)
                     return
                 }
 
-                UserService._user = User.findByPk(decoded['id'])
+                const result = await User.findByPk(decoded['id'])
+                UserService._user = result?.get()
+                // console.log(UserService._user);
+                
                 resolve(true)
                 return
             })

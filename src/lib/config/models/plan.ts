@@ -1,5 +1,7 @@
 import * as Sequelize from "sequelize"
 import {sequelize} from '../database/database'
+import { PlanUsers } from "./planUser"
+import { User } from "./user"
 
 export enum planType{
     plan = "plan",
@@ -7,9 +9,9 @@ export enum planType{
     stock = "stock"
 }
 export enum planNames {
-    beginners           = "gas",
-    standard            = "crude oil",
-    advance             = "Refined Product",
+    gas           = "gas",
+    "crude oil"            = "crude oil",
+    "Refined Product"            = "Refined Product",
     "Power Systems"     = "Power Systems",
     Chemicals           = "Chemicals",
     "Large Cap Stock"   = "Large Cap Stock",
@@ -33,7 +35,7 @@ export interface IUserPlan {
 }
 export interface IPlanInterface extends Sequelize.Model {
     id: number;
-    name: string;
+    name: planNames;
     slug: string;
     rate: number;
     from: number;
