@@ -2,8 +2,9 @@ import * as bcrypt from 'bcrypt'
 // import Bluebird, { reject, resolve } from 'bluebird'
 import Cookies from 'cookies'
 import * as jwt from 'jsonwebtoken'
+import { planNames } from '../lib/config/models/plan'
 
-import { User, UserAddModel } from '../lib/config/models/user'
+import { User, UserAddModel, userStatus } from '../lib/config/models/user'
 
 // export interface UserAddModel{
 //     email?: string,
@@ -37,9 +38,9 @@ export class UserService {
                 const user = await User.create({
                     ...payload,
                     password,
-                    status: "unverified",
+                    status: userStatus.unverified,
                     wallet_balance: 0,
-                    plan: "none",
+                    plan: planNames.none,
                     role: "user",
                     slug: Math.random().toString(36).substring(2)
                 })

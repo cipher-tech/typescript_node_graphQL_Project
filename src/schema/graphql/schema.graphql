@@ -19,6 +19,18 @@ enum Plans{
   none
 }
 
+type DepositAttributes{
+    id: ID!
+    userId: Int!
+    plan: String
+    amount: Int!
+    status: String
+    slug: String
+    users: User!
+    wallet_balance: Int!
+    createdAt: DateTime
+    updatedAt: DateTime
+}
 type User {
   id: ID!
   first_name: String!
@@ -35,6 +47,7 @@ type User {
   auth_token: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  deposits: [DepositAttributes]
 }
 
 type Plan{
@@ -87,6 +100,7 @@ type Query {
   helloWorld(name: String): String!
   getUser: User!
   getUsers: [User!]!
+  getPendingDeposits: [DepositAttributes!]
 }
 
 type Mutation {

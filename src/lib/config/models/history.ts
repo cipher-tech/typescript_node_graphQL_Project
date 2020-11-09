@@ -1,8 +1,26 @@
-import * as Sequelize from "sequelize"
+import {
+    Sequelize,
+    Model,
+    ModelDefined,
+    DataTypes,
+    HasManyGetAssociationsMixin,
+    HasManyAddAssociationMixin,
+    HasManyHasAssociationMixin,
+    Association,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    HasOneGetAssociationMixin, 
+    HasOneCreateAssociationMixin,
+    Optional,
+  } from "sequelize";
 import {sequelize} from '../database/database'
 import { planNames } from "./plan"
 import { User } from "./user"
 
+const config = {
+    tableName: 'histories',
+    sequelize: sequelize,
+  };
 export enum historyStatus{
     pending = "pending",
     accepted = "accepted"
@@ -24,73 +42,79 @@ export interface IHistory{
     updatedAt?: Date;
 }
 
-interface IUserHistory extends Sequelize.Model {
-    id: number
-    userId: number
-    slug: string 
-    reference_id: string 
-    plan: planNames
-    amount: number
-    earnings: number
-    duration: number
-    rate: number
-    status: historyStatus
-    wallet_balance?: number;
-    coin_address: string
-    createdAt: Date;
-    updatedAt: Date;
+interface DepositCreationAttributes extends Optional<IHistory, "id"> {}
+
+export class History extends Model<IHistory, DepositCreationAttributes>
+implements IHistory{
+    public  id!: number
+    public  userId!: number
+    public  slug!: string 
+    public  reference_id!: string 
+    public  plan!: planNames
+    public  amount!: number
+    public  earnings!: number
+    public  duration!: number
+    public  rate!: number
+    public  status!: historyStatus
+    public  wallet_balance!: number;
+    public  coin_address!: string
+    public  createdAt!: Date;
+    public  updatedAt!: Date;
+
+    public getUser!: HasOneGetAssociationMixin<User>; // Note the null assertions!
 }
 
-export const History = sequelize.define<IUserHistory, IHistory>("History", {
+History.init({
     id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
     },
     userId: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     slug: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     },
     reference_id: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     plan: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     },
     amount: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     earnings: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     duration: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     rate: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     status: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     },
     wallet_balance: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     coin_address: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     },
-})
+},
+config)
 
 History.sync().then(() => console.log("History table created"))

@@ -30,13 +30,15 @@ const server = new ApolloServer({
 var corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true // <-- REQUIRED backend setting
-  };
+};
 app.use(cors(corsOptions));
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 // app.use("*", cors());
 app.use(compression());
 app.use('/', userRouter);
+
+modelAssociation()
 
 server.applyMiddleware({app, path: "/graphql", cors: false});
 
@@ -47,5 +49,3 @@ httpServer.listen(
     (): void => console.log(`\n  GraphQL server is now running 
     on http://localhost:8000/graphql`)
 )
-
-modelAssociation()

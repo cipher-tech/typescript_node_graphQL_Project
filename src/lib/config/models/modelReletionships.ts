@@ -11,9 +11,15 @@ export function modelAssociation() {
 
     Withdrawal.belongsTo(User)
 
-    Deposit.belongsTo(User)
+    Deposit.belongsTo(User, {targetKey: 'id', 
+    foreignKey: 'userId',
+    as: "users"})
 
-    User.hasMany(Deposit)
+    User.hasMany(Deposit,{
+        sourceKey: 'id',
+        foreignKey: 'userId',
+        as: 'deposits' // this determines the name in `associations`!
+      })
     User.hasMany(History)
     User.hasMany(Withdrawal)
     

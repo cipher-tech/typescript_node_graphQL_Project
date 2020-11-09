@@ -1,20 +1,20 @@
 import * as Sequelize from "sequelize"
 import {sequelize} from '../database/database'
 
-enum IPlanUsersStatus {
+export enum IPlanUsersStatus {
     active = "active",
     inactive = "inactive"
 }
 export interface IPlanUsers {
     id: number
-    planId: number
-    userId: number
-    amount: number
-    count: number
-    duration: number
-    status: IPlanUsersStatus
-    earnings: number
-    rate: number
+    planId?: number
+    userId?: number
+    amount?: number
+    count?: number
+    duration?: number
+    status?: IPlanUsersStatus
+    earnings?: number
+    rate?: number
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -69,6 +69,6 @@ export const PlanUsers = sequelize.define<IPlanUser, IPlanUsers>("PlanUsers", {
         type: new Sequelize.INTEGER,
         allowNull: !false,
     },
-})
+}, {tableName: "planUsers"})
 
-PlanUsers.sync().then(() => console.log("PlanUsers table created"))
+// PlanUsers.sync({force: true}).then(() => console.log("PlanUsers table created"))

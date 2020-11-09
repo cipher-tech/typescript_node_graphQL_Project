@@ -38,6 +38,7 @@
     "compression": "^1.7.4",
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
+    "dayjs": "^1.9.5",
     "express": "^4.17.1",
     "graphql": "^15.3.0",
     "http": "0.0.1-security",

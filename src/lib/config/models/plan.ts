@@ -1,8 +1,26 @@
-import * as Sequelize from "sequelize"
+import {
+    Sequelize,
+    Model,
+    ModelDefined,
+    DataTypes,
+    HasManyGetAssociationsMixin,
+    HasManyAddAssociationMixin,
+    HasManyHasAssociationMixin,
+    Association,
+    HasManyCountAssociationsMixin,
+    HasManyCreateAssociationMixin,
+    HasOneGetAssociationMixin, 
+    HasOneCreateAssociationMixin,
+    Optional,
+  } from "sequelize";
 import {sequelize} from '../database/database'
 import { PlanUsers } from "./planUser"
 import { User } from "./user"
 
+const config = {
+    tableName: 'plans',
+    sequelize: sequelize,
+  };
 export enum planType{
     plan = "plan",
     shares = "shares",
@@ -33,54 +51,60 @@ export interface IUserPlan {
     createdAt?: Date;
     updatedAt?: Date;
 }
-export interface IPlanInterface extends Sequelize.Model {
-    id: number;
-    name: planNames;
-    slug: string;
-    rate: number;
-    from: number;
-    to: number;
-    duration: number;
-    type: planType;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
-export const Plan = sequelize.define<IPlanInterface, IUserPlan>("Plan",{
+interface PlanCreationAttributes extends Optional<IUserPlan, "id"> {}
+
+export class Plan extends Model<IUserPlan, PlanCreationAttributes>
+implements IUserPlan{
+    public  id!: number;
+    public  name!: planNames;
+    public  slug!: string;
+    public  rate!: number;
+    public  from!: number;
+    public  to!: number;
+    public  type!: planType;
+    public  duration!: number;
+    public  createdAt!: Date;
+    public  updatedAt!: Date;
+
+    public getUser!: HasOneGetAssociationMixin<User>;
+}
+Plan.init({
     id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
     },
     name: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     },
     
     slug: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     rate: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     from: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     to: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     duration: {
-        type: new Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     }, 
     type: {
-        type: new Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
     }, 
-})
+}, 
+config)
 
 Plan.sync().then(() => console.log('Plans table created'))

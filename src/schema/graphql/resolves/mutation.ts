@@ -3,6 +3,7 @@ import Cookies from 'cookies';
 import { Request, Response } from 'express'
 import { Deposit, depositStatus } from '../../../lib/config/models/deposit';
 import { Plan, planNames } from '../../../lib/config/models/plan';
+import { IPlanUsersStatus, PlanUsers } from '../../../lib/config/models/planUser';
 // import validator from 'validator';
 import { User, UserAddModel } from "../../../lib/config/models/user";
 import { UserService } from '../../../middleware/auth';
@@ -18,11 +19,11 @@ interface IArgs {
     input: UserAddModel
 }
 
-interface IDepositRequest{
-    input: {userId:string, amount: number, plan: string}
+interface IDepositRequest {
+    input: { userId: string, amount: number, plan: planNames }
 }
-interface IActivateDepositProps{
-    input: {id: number}
+interface IActivateDepositProps {
+    input: { id: number }
 }
 
 export const Mutation = {
@@ -38,7 +39,7 @@ export const Mutation = {
         const UserLoginAuth = new UserService()
         const result = await UserLoginAuth.login(args.input, cookies!)
 
-        
+
         // if(!validator.isEmail(args.input.email!)){
         //     errors.push("Incorrect email format")
         // }
@@ -50,11 +51,11 @@ export const Mutation = {
         console.log(result);
         return result
     },
-    async depositRequest(parent: void, args: IDepositRequest , {user}: IRequestResponseCookies){
-        if(!user) return new AuthenticationError("Not Authorized") 
-        
+    async depositRequest(parent: void, args: IDepositRequest, { user }: IRequestResponseCookies) {
+        if (!user) return new AuthenticationError("Not Authorized")
+
         let result = await Deposit.create({
-            userId: UserService.user.id,
+            userId: UserService.user.id!,
             plan: args.input.plan,
             amount: args.input.amount,
             status: depositStatus.pending,
@@ -62,35 +63,53 @@ export const Mutation = {
             wallet_balance: UserService.user.wallet_balance,
         })
 
-        if(result.get().id){
+        if (result.get().id) {
             return {
                 message: "successful",
                 status: true,
                 referenceId: result.slug
             }
-        }else{
-            return{
+        } else {
+            return {
                 message: "could not place deposit request",
                 status: false
             }
         }
     },
-    async activateDeposit(parent: void, args: IActivateDepositProps , {user: isAuthorized}: IRequestResponseCookies){
-        if(!isAuthorized) return new AuthenticationError("Not Authorized") 
+    async activateDeposit(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
 
         return Deposit.findByPk(args.input.id)
-        .then(async deposit =>  {
-            const user = await User.findByPk(deposit?.userId)
-            const plan = await Plan.findOne({where: {name: deposit!.plan}})
-            
-            deposit?.status
-            user!.plan = plan!.name
-            user!.getDeposit()
-            await  user!.save()
-            return {
-                message: "successful",
-                status: true,
-            }
-        })
-    }
+            .then(async deposit => {
+                const user = await User.findByPk(deposit?.userId)
+                const plan = await Plan.findOne({ where: { name: deposit!.plan } })
+
+                deposit!.status = depositStatus.accepted
+
+                user!.plan = plan!.name
+                 const activePlan =  await PlanUsers.create({
+                    planId: plan!.id,
+                    userId: user!.id,
+                    amount: deposit?.amount,
+                    count: 0,
+                    duration: plan?.duration,
+                    status: IPlanUsersStatus.active,
+                    rate: plan?.rate,
+                    earnings: 0
+                })
+                // console.log("check >>>>>>", await user?.get())
+                await user!.save()
+                await deposit?.save()
+                await plan?.save()
+                // return user?.get()
+                return {
+                    message: "successful",
+                    status: true,
+                }
+            }).catch(err => ({
+                message: "Unsuccessful",
+                status: false,
+            }))
+    },
+    
 }
