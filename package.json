@@ -45,6 +45,8 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "ncp": "^2.0.0",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^6.4.15",
     "sequelize": "^6.3.5"
   }
 }
