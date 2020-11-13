@@ -7,11 +7,11 @@ import compression from 'compression'
 import cors from 'cors'
 import Cookies from "cookies";
 
-
 import schema from './schema'
 import { userRouter } from "./lib/routes";
 import { UserService } from "./middleware/auth";
 import { modelAssociation } from "./lib/config/models/modelReletionships";
+import {PlanCronJob} from "./lib/cronJobs/";
 
 const app = express()
 const server = new ApolloServer({
@@ -44,6 +44,7 @@ server.applyMiddleware({app, path: "/graphql", cors: false});
 
 const httpServer = createServer(app);
 
+PlanCronJob()
 httpServer.listen(
     {port: 8000},
     (): void => console.log(`\n  GraphQL server is now running 

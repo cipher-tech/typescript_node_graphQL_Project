@@ -93,7 +93,10 @@ input DepositRequest{
   userId: ID!
   amount: Int!
   plan: String!
- 
+}
+input WithdrawalRequest{
+  userId: ID!
+  amount: Int!
 }
 
 type Query {
@@ -108,4 +111,6 @@ type Mutation {
   login(input: Login!): User!
   depositRequest(input: DepositRequest!): Response!
   activateDeposit(input: Id): Response!
+  deleteDepositRequest(input: Id): Response!
+  withdrawalRequest(input: WithdrawalRequest!): Response!
 }

@@ -1,4 +1,4 @@
-import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server-express';
 import Cookies from 'cookies';
 import { Request, Response } from 'express'
 import { Deposit, depositStatus } from '../../../lib/config/models/deposit';
@@ -6,6 +6,7 @@ import { Plan, planNames } from '../../../lib/config/models/plan';
 import { IPlanUsersStatus, PlanUsers } from '../../../lib/config/models/planUser';
 // import validator from 'validator';
 import { User, UserAddModel } from "../../../lib/config/models/user";
+import { Withdrawal, withdrawalStatus } from '../../../lib/config/models/withdrawal';
 import { UserService } from '../../../middleware/auth';
 
 
@@ -21,6 +22,9 @@ interface IArgs {
 
 interface IDepositRequest {
     input: { userId: string, amount: number, plan: planNames }
+}
+interface IWithdrawalRequest {
+    input: { userId: number, amount: number, }
 }
 interface IActivateDepositProps {
     input: { id: number }
@@ -87,7 +91,8 @@ export const Mutation = {
                 deposit!.status = depositStatus.accepted
 
                 user!.plan = plan!.name
-                 const activePlan =  await PlanUsers.create({
+                // user!.wallet_balance = deposit?.amount!
+                const activePlan = await PlanUsers.create({
                     planId: plan!.id,
                     userId: user!.id,
                     amount: deposit?.amount,
@@ -106,10 +111,63 @@ export const Mutation = {
                     message: "successful",
                     status: true,
                 }
-            }).catch(err => ({
-                message: "Unsuccessful",
-                status: false,
-            }))
+            })
+            .catch(err => {
+                console.log(err);
+                return {
+                    message: "Unsuccessful",
+                    status: false,
+                }
+            })
     },
-    
+    async deleteDepositRequest(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
+
+        return Deposit.findByPk(args.input.id)
+            .then(async deposit => {
+                await deposit?.destroy()
+                return {
+                    message: "Successful",
+                    status: true,
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                return {
+                    message: "Unsuccessful",
+                    status: false,
+                }
+            })
+
+    },
+    async withdrawalRequest(parent: void, args: IWithdrawalRequest, { user }: IRequestResponseCookies) {
+        if (!user) return new AuthenticationError("Not Authorized")
+
+        if(args.input.amount > UserService.user.earnings!){
+            return new UserInputError("Amount greater than wallet balance")
+        }
+        return Withdrawal.create({
+            userId: UserService.user.id!,
+            plan: planNames.none,
+            amount: args.input.amount,
+            status: withdrawalStatus.pending,
+            slug: Math.random().toString(36).substring(2),
+            wallet_balance: UserService.user.wallet_balance,
+            coin_address: UserService.user.coin_address!
+        })
+        .then( result => {
+            if (result.get().id) {
+                return {
+                    message: "successful",
+                    status: true,
+                    referenceId: result.slug
+                }
+            } else {
+                return new UserInputError("Amount greater than wallet balance")
+            }
+        })
+        .catch( err => {
+            return new ApolloError("could not place withdrawal request");
+        })
+    },
 }

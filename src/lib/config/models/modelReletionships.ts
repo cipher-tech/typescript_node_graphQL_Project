@@ -25,7 +25,7 @@ export function modelAssociation() {
     
     User.belongsToMany(Plan, { through: PlanUsers })
     Plan.belongsToMany(User, { through: PlanUsers })
-    console.log("ok");
+    // console.log("ok");
 
 }
 
