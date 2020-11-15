@@ -82,6 +82,7 @@ export const Mutation = {
     },
     async activateDeposit(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
+        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
 
         return Deposit.findByPk(args.input.id)
             .then(async deposit => {
@@ -122,6 +123,7 @@ export const Mutation = {
     },
     async deleteDepositRequest(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
+        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
 
         return Deposit.findByPk(args.input.id)
             .then(async deposit => {
@@ -143,7 +145,7 @@ export const Mutation = {
     async withdrawalRequest(parent: void, args: IWithdrawalRequest, { user }: IRequestResponseCookies) {
         if (!user) return new AuthenticationError("Not Authorized")
 
-        if(args.input.amount > UserService.user.earnings!){
+        if (args.input.amount > UserService.user.earnings!) {
             return new UserInputError("Amount greater than wallet balance")
         }
         return Withdrawal.create({
@@ -155,19 +157,55 @@ export const Mutation = {
             wallet_balance: UserService.user.wallet_balance,
             coin_address: UserService.user.coin_address!
         })
-        .then( result => {
-            if (result.get().id) {
-                return {
-                    message: "successful",
-                    status: true,
-                    referenceId: result.slug
+            .then(result => {
+                if (result.get().id) {
+                    return {
+                        message: "successful",
+                        status: true,
+                        referenceId: result.slug
+                    }
+                } else {
+                    return new UserInputError("Amount greater than wallet balance")
                 }
-            } else {
-                return new UserInputError("Amount greater than wallet balance")
+            })
+            .catch(err => {
+                return new ApolloError("could not place withdrawal request");
+            })
+    },
+    async activateWithdrawal(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
+        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
+
+        return Withdrawal.findByPk(args.input.id)
+        .then(async withdrawal => {
+            withdrawal!.status = withdrawalStatus.accepted
+            await withdrawal?.save()
+            return {
+                message: "successful",
+                status: true,
             }
         })
-        .catch( err => {
-            return new ApolloError("could not place withdrawal request");
+        .catch(err => {
+            console.log(err);
+            return new ApolloError("could not accept withdrawal ");
         })
+    },
+    async deleteWithdrawalRequest(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
+        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
+
+        return Withdrawal.findByPk(args.input.id)
+            .then(async withdrawal => {
+                await withdrawal?.destroy()
+                return {
+                    message: "Successful",
+                    status: true,
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                return new ApolloError("could not accept withdrawal ");
+            })
+
     },
 }

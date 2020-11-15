@@ -103,7 +103,12 @@ type Query {
   helloWorld(name: String): String!
   getUser: User!
   getUsers: [User!]!
+  getUserPendingDeposits: [DepositAttributes!]
+  getUserDeposits: [DepositAttributes!]
   getPendingDeposits: [DepositAttributes!]
+  getUserPendingWithdrawals: [DepositAttributes!]
+  getUserWithdrawals: [DepositAttributes!]
+  getPendingWithdrawals: [DepositAttributes!]
 }
 
 type Mutation {
@@ -113,4 +118,6 @@ type Mutation {
   activateDeposit(input: Id): Response!
   deleteDepositRequest(input: Id): Response!
   withdrawalRequest(input: WithdrawalRequest!): Response!
+  activateWithdrawal(input: Id): Response!
+  deleteWithdrawalRequest(input: Id): Response!
 }
