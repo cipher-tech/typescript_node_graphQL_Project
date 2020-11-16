@@ -47,6 +47,7 @@ implements IWithdrawal{
     public slug!: string
     public wallet_balance!: number;
     public coin_address!: string
+    public totalWithdrawal?: number
     public createdAt!: Date;
     public updatedAt!: Date;
 

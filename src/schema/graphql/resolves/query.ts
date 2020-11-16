@@ -8,6 +8,7 @@ import { userInfo } from 'os';
 import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import { Deposit, depositStatus } from '../../../lib/config/models/deposit';
 import { Withdrawal } from '../../../lib/config/models/withdrawal';
+import sequelize from 'sequelize';
 
 interface IRequestResponse {
     req?: Request
@@ -79,9 +80,11 @@ export const Query = {
     async getUserPendingWithdrawals(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
 
-        return Withdrawal.findAll({ where: { 
-            userId: UserService.user.id,
-            status: depositStatus.pending }
+        return Withdrawal.findAll({
+            where: {
+                userId: UserService.user.id,
+                status: depositStatus.pending
+            }
         })
             .then(async withdrawal => {
                 return withdrawal
@@ -94,8 +97,9 @@ export const Query = {
     async getUserWithdrawals(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
 
-        return Withdrawal.findAll({ where: { 
-            userId: UserService.user.id
+        return Withdrawal.findAll({
+            where: {
+                userId: UserService.user.id
             }
         })
             .then(async withdrawal => {
@@ -119,4 +123,40 @@ export const Query = {
                 throw new ApolloError("could not fetch Withdrawals")
             })
     },
+    async getUserStats(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
+
+        const totalEarnings = await User.findByPk(UserService.user.id, {
+            attributes: [
+                [sequelize.fn("SUM", sequelize.col("earnings")), "totalEarnings"],
+            ],
+        })
+        const totalDeposits = await Deposit.findAll({
+            where: { userId: UserService.user.id },
+            attributes: [
+                [sequelize.fn("SUM", sequelize.col("amount")), "totalDeposits"],
+            ],
+        })
+        const totalWithdrawal = await Withdrawal.findAll({
+            where: { userId: UserService.user.id },
+            attributes: [
+                [sequelize.fn("SUM", sequelize.col("amount")), "totalWithdrawal"],
+            ],
+        })
+        console.log({
+            totalEarnings: +totalEarnings!.get('totalEarnings')!,
+            totalDeposits: +totalDeposits[0].get("totalDeposits")!,
+            totalWithdrawal: +totalWithdrawal[0].get("totalWithdrawal")!,
+            totalBalance: UserService.user.wallet_balance
+        });
+        
+
+        return {
+            totalBalance: UserService.user.wallet_balance,
+            totalEarnings: +totalEarnings!.get('totalEarnings')!,
+            totalDeposits: +totalDeposits[0].get("totalDeposits")!,
+            totalWithdrawal: +totalWithdrawal[0].get("totalWithdrawal")!,
+        }
+
+    }
 }

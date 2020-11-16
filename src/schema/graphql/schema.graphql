@@ -71,6 +71,12 @@ type Response{
   status: String
   referenceId: String!
 }
+type UserStats{
+  totalBalance: Int!
+  totalEarnings: Int!
+  totalDeposits: Int!
+  totalWithdrawal: Int!
+}
 input Register{
   first_name: String!
   last_name: String!
@@ -99,6 +105,7 @@ input WithdrawalRequest{
   amount: Int!
 }
 
+
 type Query {
   helloWorld(name: String): String!
   getUser: User!
@@ -109,6 +116,7 @@ type Query {
   getUserPendingWithdrawals: [DepositAttributes!]
   getUserWithdrawals: [DepositAttributes!]
   getPendingWithdrawals: [DepositAttributes!]
+  getUserStats: UserStats!
 }
 
 type Mutation {

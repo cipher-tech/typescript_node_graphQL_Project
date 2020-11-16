@@ -80,6 +80,8 @@ export class User extends Model<UserAddModel, UserCreationAttributes>
     public role?: Roles;
     public slug?: string;
     public auth_token?: string;
+    public totalBalance?: number
+    public totalEarnings?: number
     public readonly createdAt?: Date;
     public readonly updatedAt?: Date;
 

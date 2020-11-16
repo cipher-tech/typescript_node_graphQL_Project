@@ -48,7 +48,7 @@ implements IDeposit{
     public wallet_balance?: number;
     public createdAt?: Date;
     public updatedAt?: Date;
-
+    public totalDeposits?: number
     public getUser!: HasOneGetAssociationMixin<User>; // Note the null assertions!
 
 }
