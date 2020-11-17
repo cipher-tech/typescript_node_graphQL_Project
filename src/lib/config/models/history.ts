@@ -117,4 +117,4 @@ History.init({
 },
 config)
 
-History.sync().then(() => console.log("History table created"))
+// History.sync().then(() => console.log("History table created"))

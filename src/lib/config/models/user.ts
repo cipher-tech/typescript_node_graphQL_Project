@@ -189,4 +189,4 @@ User.init({
     config)
 
 
-User.sync().then(() => console.log('Users table created'))
+// User.sync().then(() => console.log('Users table created'))

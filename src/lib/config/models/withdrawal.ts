@@ -99,4 +99,4 @@ Withdrawal.init({
 },
 config)
 
-Withdrawal.sync().then(() => console.log("Withdrawals table created"))
+// Withdrawal.sync().then(() => console.log("Withdrawals table created"))

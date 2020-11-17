@@ -107,4 +107,4 @@ Plan.init({
 }, 
 config)
 
-Plan.sync().then(() => console.log('Plans table created'))
+// Plan.sync().then(() => console.log('Plans table created'))

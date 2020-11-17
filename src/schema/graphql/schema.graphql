@@ -76,6 +76,7 @@ type UserStats{
   totalEarnings: Int!
   totalDeposits: Int!
   totalWithdrawal: Int!
+  activePlan: String
 }
 input Register{
   first_name: String!
@@ -116,7 +117,10 @@ type Query {
   getUserPendingWithdrawals: [DepositAttributes!]
   getUserWithdrawals: [DepositAttributes!]
   getPendingWithdrawals: [DepositAttributes!]
+  getAdminDeposits: [DepositAttributes!]
+  getAdminWithdrawals: [DepositAttributes!]
   getUserStats: UserStats!
+  getAdminStats: UserStats!
 }
 
 type Mutation {

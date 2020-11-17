@@ -85,4 +85,4 @@ Deposit.init ({
 },
 config)
 
-Deposit.sync().then(() => console.log("Deposits table created"))
+// Deposit.sync().then(() => console.log("Deposits table created"))
