@@ -183,11 +183,11 @@ export const Query = {
             where: { userId: UserService.user.id },
             attributes: [
                 [sequelize.fn("SUM", sequelize.col("amount")), "totalDeposits"],
-            ],
+            ], 
         })
         const totalWithdrawal = await Withdrawal.findAll({
             where: { userId: UserService.user.id },
-            attributes: [
+            attributes: [   
                 [sequelize.fn("SUM", sequelize.col("amount")), "totalWithdrawal"],
             ],
         })

@@ -58,6 +58,27 @@ export const Mutation = {
     async depositRequest(parent: void, args: IDepositRequest, { user }: IRequestResponseCookies) {
         if (!user) return new AuthenticationError("Not Authorized")
 
+        if(UserService.user.plan != "none") {
+            return {
+                message: "already on a plan, could not place deposit request",
+                status: false
+            } 
+        }
+        const userHasPendingDeposit = await Deposit.findOne({where:{
+            userId: UserService.user.id,
+            status: depositStatus.pending
+        }})
+        console.log(userHasPendingDeposit?.get());
+        
+        if(userHasPendingDeposit?.get()){
+            console.log("here");
+            
+            return {
+                message: "You have a pending deposit request",
+                status: false,
+                referenceId: "none"
+            } 
+        }
         let result = await Deposit.create({
             userId: UserService.user.id!,
             plan: args.input.plan,
