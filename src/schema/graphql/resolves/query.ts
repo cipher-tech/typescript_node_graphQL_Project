@@ -7,7 +7,7 @@ import { IRequestResponseCookies } from './mutation';
 import { userInfo } from 'os';
 import { ApolloError, AuthenticationError } from 'apollo-server-express';
 import { Deposit, depositStatus } from '../../../lib/config/models/deposit';
-import { Withdrawal } from '../../../lib/config/models/withdrawal';
+import { Withdrawal, withdrawalStatus } from '../../../lib/config/models/withdrawal';
 import sequelize from 'sequelize';
 
 interface IRequestResponse {
@@ -144,13 +144,13 @@ export const Query = {
             ],
         })
         const totalDeposits = await Deposit.findAll({
-            where: { userId: UserService.user.id },
+            where: { userId: UserService.user.id, status: depositStatus.accepted },
             attributes: [
                 [sequelize.fn("SUM", sequelize.col("amount")), "totalDeposits"],
             ],
         })
         const totalWithdrawal = await Withdrawal.findAll({
-            where: { userId: UserService.user.id },
+            where: { userId: UserService.user.id, status: withdrawalStatus.accepted },
             attributes: [
                 [sequelize.fn("SUM", sequelize.col("amount")), "totalWithdrawal"],
             ],
@@ -166,6 +166,7 @@ export const Query = {
             totalBalance: UserService.user.wallet_balance,
             totalEarnings: +totalEarnings!.get('totalEarnings')!,
             totalDeposits: +totalDeposits[0].get("totalDeposits")!,
+            totalWithdrawal: +totalWithdrawal[0].get("totalWithdrawal")!,
             activePlan: UserService.user.plan,
         }
 

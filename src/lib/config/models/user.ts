@@ -47,6 +47,8 @@ export interface UserAddModel {
     phone_no?: string;
     password?: string | undefined;
     earnings?: number;
+    stock?: number;
+    shares?: number;
     status?: userStatus;
     coin_address?: string;
     wallet_balance?: number;
@@ -73,6 +75,8 @@ export class User extends Model<UserAddModel, UserCreationAttributes>
     public phone_no?: string;
     public password?: string;
     public earnings?: number;
+    public stock?: number;
+    public shares?: number;
     public status!: userStatus;
     public coin_address?: string;
     public wallet_balance?: number;
@@ -153,6 +157,16 @@ User.init({
         allowNull: true,
     },
     earnings: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    stock: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    shares: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0

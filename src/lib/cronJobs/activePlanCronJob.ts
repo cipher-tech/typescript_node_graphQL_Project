@@ -8,7 +8,7 @@ import { User } from "../config/models/user"
 export const activePlanCronJob = () => {
     // const day1 = dayjs("2020-11-19 22:42:18")
     // console.log(day1.diff("2020-11-17 22:32:18", "hour") % 24)
-    cron.schedule("* * * * *", () => {
+    cron.schedule("* 1 * * *", () => {
         PlanUsers.findAll({ where: { status: IPlanUsersStatus.active } })
             .then(async activePlans => {
                 activePlans.map(async planUser => {
@@ -16,14 +16,31 @@ export const activePlanCronJob = () => {
                     const user = await User.findByPk(planUser.userId)
                     const currentTime = dayjs()
 
-                    // console.log(day1.diff("2020-11-17 22:32:18", "hour") % 24)
+                    console.log(currentTime.diff(planUser.createdAt!, "hour") % 24)
                     
                     if(currentTime.diff(planUser.createdAt!, 'hour') % 24 === 0){
                         if (plan?.type === planType.plan && planUser.count <= planUser.duration) {
-                            planUser.earnings += (planUser.amount * (planUser.rate / 100)) / planUser.duration;
+                            let earnings = (planUser.amount * (planUser.rate / 100)) / planUser.duration;
+                            planUser.earnings += earnings
                             planUser.count += 1
     
-                            user!.earnings! += planUser!.earnings!
+                            user!.earnings! += earnings
+                            planUser.save()
+                            user?.save()
+                        }else if(plan?.type === planType.stock && planUser.count <= planUser.duration){
+                            let earnings = (planUser.amount * ((Math.floor(Math.random() * 5)) / 100)) / planUser.duration;
+                            planUser.earnings += earnings
+                            planUser.count += 1
+    
+                            user!.stock! += earnings
+                            planUser.save()
+                            user?.save()
+                        }else if(plan?.type === planType.shares && planUser.count <= planUser.duration){
+                            let earnings = (planUser.amount * ((Math.floor(Math.random() * 7)) / 100)) / planUser.duration;
+                            planUser.earnings += earnings
+                            planUser.count += 1
+    
+                            user!.shares! += earnings
                             planUser.save()
                             user?.save()
                         }

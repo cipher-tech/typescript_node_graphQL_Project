@@ -58,48 +58,92 @@ export const Mutation = {
     async depositRequest(parent: void, args: IDepositRequest, { user }: IRequestResponseCookies) {
         if (!user) return new AuthenticationError("Not Authorized")
 
-        if(UserService.user.plan != "none") {
-            return {
-                message: "already on a plan, could not place deposit request",
-                status: false
-            } 
-        }
-        const userHasPendingDeposit = await Deposit.findOne({where:{
-            userId: UserService.user.id,
-            status: depositStatus.pending
-        }})
-        console.log(userHasPendingDeposit?.get());
-        
-        if(userHasPendingDeposit?.get()){
-            console.log("here");
-            
-            return {
-                message: "You have a pending deposit request",
-                status: false,
-                referenceId: "none"
-            } 
-        }
-        let result = await Deposit.create({
-            userId: UserService.user.id!,
-            plan: args.input.plan,
-            amount: args.input.amount,
-            status: depositStatus.pending,
-            slug: Math.random().toString(36).substring(2),
-            wallet_balance: UserService.user.wallet_balance,
+        // if(UserService.user.plan != "none") {
+        //     return {
+        //         message: "already on a plan, could not place deposit request",
+        //         status: false
+        //     } 
+        // }
+        const AllPendingDeposit = await Deposit.findAll({
+            where: {
+                userId: UserService.user.id,
+                status: depositStatus.pending
+            }
         })
 
-        if (result.get().id) {
-            return {
-                message: "successful",
-                status: true,
-                referenceId: result.slug
+            const userSelectedPlan = await Plan.findOne({
+                where: {
+                    name: args.input.plan,
+                }
+            })
+            let planIsOfSameType;
+            if (AllPendingDeposit.length > 0) {
+                AllPendingDeposit.forEach((deposit) => {
+                    return Plan.findOne({
+                        where: {
+                            name: deposit.plan
+                        }
+                    }).then( userPlan => {
+                        if (userPlan?.type === userSelectedPlan?.type) {
+                            console.log(userPlan?.type === userSelectedPlan?.type, "kkkkk");
+                            planIsOfSameType = true;
+                            
+                        }
+                        else planIsOfSameType = false;
+                    })
+
+                })
             }
-        } else {
-            return {
-                message: "could not place deposit request",
-                status: false
+            if (planIsOfSameType) {
+                console.log("of same type ", planIsOfSameType);
+                return {
+                    message: "You already have a pending plan of this type",
+                    status: false,
+                    referenceId: "none"
+                }
             }
-        }
+
+            const isUserOnPlan = await PlanUsers.findAll({
+                where: {
+                    userId: UserService.user.id!,
+                }
+            })
+            if (isUserOnPlan.length > 0) {
+                isUserOnPlan.forEach(async userActivePlan => {
+                    const userPlan = await Plan.findOne({
+                        where: {
+                            id: userActivePlan.planId
+                        }
+                    })
+
+                    if (userPlan!.type === userSelectedPlan?.type) {
+                        return {
+                            message: "You already have an active plan of this type",
+                            status: false,
+                            referenceId: "none"
+                        }
+                    }
+                })
+            }
+
+            let result = await Deposit.create({
+                userId: UserService.user.id!,
+                plan: args.input.plan,
+                amount: args.input.amount,
+                status: depositStatus.pending,
+                slug: Math.random().toString(36).substring(2),
+                wallet_balance: UserService.user.wallet_balance,
+            })
+
+            if (result.get().id) {
+                return {
+                    message: "successful",
+                    status: true,
+                    referenceId: result.slug
+                }
+            } else {
+                return new ApolloError("Could not place deposit request.")
+            }
     },
     async activateDeposit(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
@@ -198,18 +242,18 @@ export const Mutation = {
         if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
 
         return Withdrawal.findByPk(args.input.id)
-        .then(async withdrawal => {
-            withdrawal!.status = withdrawalStatus.accepted
-            await withdrawal?.save()
-            return {
-                message: "successful",
-                status: true,
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            return new ApolloError("could not accept withdrawal ");
-        })
+            .then(async withdrawal => {
+                withdrawal!.status = withdrawalStatus.accepted
+                await withdrawal?.save()
+                return {
+                    message: "successful",
+                    status: true,
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                return new ApolloError("could not accept withdrawal ");
+            })
     },
     async deleteWithdrawalRequest(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
@@ -229,4 +273,7 @@ export const Mutation = {
             })
 
     },
+    logout() {
+        return true
+    }
 }

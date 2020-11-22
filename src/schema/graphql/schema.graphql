@@ -132,4 +132,5 @@ type Mutation {
   withdrawalRequest(input: WithdrawalRequest!): Response!
   activateWithdrawal(input: Id): Response!
   deleteWithdrawalRequest(input: Id): Response!
+  logout: Boolean
 }
