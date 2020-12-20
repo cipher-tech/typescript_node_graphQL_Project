@@ -3,12 +3,6 @@ import {
     Model,
     ModelDefined,
     DataTypes,
-    HasManyGetAssociationsMixin,
-    HasManyAddAssociationMixin,
-    HasManyHasAssociationMixin,
-    Association,
-    HasManyCountAssociationsMixin,
-    HasManyCreateAssociationMixin,
     HasOneGetAssociationMixin, 
     HasOneCreateAssociationMixin,
     Optional,
@@ -23,7 +17,8 @@ const config = {
   };
 export enum depositStatus{
     pending = "pending",
-    accepted = "accepted"
+    accepted = "accepted",
+    canceled = "canceled"
 }
 export interface IDeposit {
     id: number

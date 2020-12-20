@@ -37,7 +37,7 @@ export enum planNames {
     "Blue Chip Stocks"  = "Blue Chip Stocks",
     "Redeemable Shares" = "Redeemable Shares",
     "Equity Shares"     = "Equity Shares",
-    none = "none",
+    none                = "none",
 }
 export interface IUserPlan {
     id: number;

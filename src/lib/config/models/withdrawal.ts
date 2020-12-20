@@ -20,7 +20,8 @@ const config = {
   };
 export enum withdrawalStatus{
     pending = "pending",
-    accepted = "accepted"
+    accepted = "accepted",
+    canceled = "canceled"
 }
 export interface IWithdrawal {
     id: number
