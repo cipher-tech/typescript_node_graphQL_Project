@@ -74,7 +74,7 @@ type UserToken {
 }
 type Response {
   message: String
-  status: String
+  status: Boolean
   referenceId: String!
 }
 type UserStats {
@@ -139,5 +139,6 @@ type Mutation {
   withdrawalRequest(input: WithdrawalRequest!): Response!
   activateWithdrawal(input: Id): Response!
   deleteWithdrawalRequest(input: Id): Response!
+  deleteUser(input: Id): Response!
   logout: Boolean
 }

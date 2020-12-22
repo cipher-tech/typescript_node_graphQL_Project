@@ -41,7 +41,7 @@ export const Query = {
                 throw new ApolloError("could not fetch Withdrawals")
             })
     },
-    async getUserPendingDeposits(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {
+    async getUserPendingDeposits(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {        
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
 
         return Deposit.findAll({
@@ -77,7 +77,7 @@ export const Query = {
     },
     async getPendingDeposits(parent: void, args: void, { user: isAuthorized }: IRequestResponseCookies) {
         if (!isAuthorized) return new AuthenticationError("Not Authorized")
-        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
+        // if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
 
         return Deposit.findAll({ where: { status: depositStatus.pending }, include: "users" })
             .then(async deposits => {

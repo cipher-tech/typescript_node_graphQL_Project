@@ -152,8 +152,15 @@ export const Mutation = {
 
                 deposit!.status = depositStatus.accepted
 
-                user!.plan = plan!.name
+                user!.plan = plan?.name
+                const UserOnPlan = await PlanUsers.findOne({where: {userId: user?.id}})
                 // user!.wallet_balance = deposit?.amount!
+                if(UserOnPlan?.id){
+                    return {
+                        message: "Unsuccessful",
+                        status: false,
+                    }
+                }
                 const activePlan = await PlanUsers.create({
                     planId: plan!.id,
                     userId: user!.id,
@@ -299,7 +306,25 @@ export const Mutation = {
             })
             .catch(err => {
                 console.log(err);
-                return new ApolloError("could not accept withdrawal ");
+                return new ApolloError("could not delete withdrawal ");
+            })
+
+    },
+    async deleteUser(parent: void, args: IActivateDepositProps, { user: isAuthorized }: IRequestResponseCookies) {
+        if (!isAuthorized) return new AuthenticationError("Not Authorized")
+        if (UserService.user.role !== "admin") return new AuthenticationError("Not Authorized")
+
+        return User.findByPk(args.input.id)
+            .then(async user => {
+                await user?.destroy()
+                return {
+                    message: "Successful",
+                    status: true,
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                return new ApolloError("could not delete user ");
             })
 
     },
