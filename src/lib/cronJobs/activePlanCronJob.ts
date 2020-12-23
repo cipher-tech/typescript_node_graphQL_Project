@@ -8,6 +8,8 @@ import { User } from "../config/models/user"
 export const activePlanCronJob = () => {
     // const day1 = dayjs("2020-11-19 22:42:18")
     // console.log(day1.diff("2020-11-17 22:32:18", "hour") % 24)
+    console.log("running cron job")
+
     cron.schedule("* 1 * * *", () => {
         PlanUsers.findAll({ where: { status: IPlanUsersStatus.active } })
             .then(async activePlans => {

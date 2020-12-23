@@ -7,6 +7,7 @@ import { IPlanUsersStatus, PlanUsers } from '../../../lib/config/models/planUser
 // import validator from 'validator';
 import { User, UserAddModel } from "../../../lib/config/models/user";
 import { Withdrawal, withdrawalStatus } from '../../../lib/config/models/withdrawal';
+import { Mailer, serverEmail } from '../../../lib/mail/config';
 import { UserService } from '../../../middleware/auth';
 
 
@@ -132,6 +133,66 @@ export const Mutation = {
             })
 
             if (result.get().id) {
+                
+                Mailer(UserService.user.email, "Deposit request Successful", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Deposit request Successful</h3>
+                <p style={{ margin: "0px" }}>
+                 Your deposit request was Successful.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    <span> First Name: <b>${UserService.user.first_name}</b> </span> <br />
+                    <span> Email: <b>${UserService.user.email}</b> </span> <br />
+                    <span> Plan: <b>${args.input.plan}</b> </span> <br />
+                    <span> Amount: <b>$${args.input.amount}</b> </span> <br />
+                    <span> Status: <b>${depositStatus.pending}</b> </span> <br />
+                    <span> ref id: <b>${result.slug}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Thanks
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                Mailer(serverEmail, "Deposit request placed", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Deposit requested</h3>
+                <p style={{ margin: "0px" }}>
+                 deposit request placed.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    
+                    <span> First Name: <b>${UserService.user.first_name}</b> </span> <br />
+                    <span> Email: <b>${UserService.user.email}</b> </span> <br />
+                    <span> Plan: <b>${args.input.plan}</b> </span> <br />
+                    <span> Amount: <b>${args.input.amount}</b> </span> <br />
+                    <span> Status: <b>${depositStatus.pending}</b> </span> <br />
+                    <span> ref id: <b>${result.slug}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Check ur dashboard for more details.
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
@@ -176,6 +237,66 @@ export const Mutation = {
                 await deposit?.save()
                 await plan?.save()
                 // return user?.get()
+                Mailer(user?.email, "Deposit Confirmed, Plan Activated", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Plan Activated</h3>
+                <p style={{ margin: "0px" }}>
+                 This is to inform you that your deposit has been  Confirmed and your Plan Activated.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    <span> Plan: <b>${plan?.name}</b> </span> <br />
+                    <span> Email: <b>${user?.email}</b> </span> <br />
+                    <span> duration: <b>${plan?.duration} days</b> </span> <br />
+                    <span> rate: <b>${plan?.rate}%</b> </span> <br />
+                    <span> Amount: <b>$${deposit?.amount}</b> </span> <br />
+                    <span> Status: <b>${IPlanUsersStatus.active}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Thanks
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                
+                Mailer(serverEmail, "Plan Activated", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Plan Activated</h3>
+                <p style={{ margin: "0px" }}>
+                    Plan Activated, you activated a plan from the dashboard.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    
+                <span> Plan: <b>${plan?.name}</b> </span> <br />
+                <span> Email: <b>${user?.email}</b> </span> <br />
+                <span> duration: <b>${plan?.duration}</b> </span> <br />
+                <span> rate: <b>${plan?.rate}</b> </span> <br />
+                <span> Amount: <b>${deposit?.amount}</b> </span> <br />
+                <span> Status: <b>${IPlanUsersStatus.active}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Check ur dashboard for more details.
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
@@ -261,6 +382,64 @@ export const Mutation = {
         })
             .then(result => {
                 if (result.get().id) {
+                    Mailer(UserService.user.email, "Withdrawal request Successful", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Withdrawal request Successful</h3>
+                <p style={{ margin: "0px" }}>
+                 Your withdrawal request was Successful.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    <span> First Name: <b>${UserService.user.first_name}</b> </span> <br />
+                    <span> Email: <b>${UserService.user.email}</b> </span> <br />
+                    <span> Amount: <b>${args.input.amount}</b> </span> <br />
+                    <span> Status: <b>${withdrawalStatus.pending}</b> </span> <br />
+                    <span> ref id: <b>${result.slug}</b> </span> <br />
+                    <span> coin_address: <b>${UserService.user.coin_address!}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Thanks
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                Mailer(serverEmail, "Withdrawal request placed", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>Withdrawal requested</h3>
+                <p style={{ margin: "0px" }}>
+                 withdrawal request placed.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    
+                    <span> First Name: <b>${UserService.user.first_name}</b> </span> <br />
+                    <span> Email: <b>${UserService.user.email}</b> </span> <br />
+                    <span> Amount: <b>${args.input.amount}</b> </span> <br />
+                    <span> Status: <b>${withdrawalStatus.pending}</b> </span> <br />
+                    <span> ref id: <b>${result.slug}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Check ur dashboard for more details.
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
                     return {
                         message: "successful",
                         status: true,
@@ -282,6 +461,63 @@ export const Mutation = {
             .then(async withdrawal => {
                 withdrawal!.status = withdrawalStatus.accepted
                 await withdrawal?.save()
+                const user = await User.findByPk(withdrawal?.userId)
+                Mailer(user?.email, "withdrawal request Confirmed", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>withdrawal Confirmed</h3>
+                <p style={{ margin: "0px" }}>
+                 This is to inform you that your withdrawal request has been  Confirmed.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    <span> Amount: <b>${withdrawal?.amount}</b> </span> <br />
+                    <span> Email: <b>${user?.email}</b> </span> <br />
+                    <span> Status: <b>${withdrawalStatus.accepted}</b> </span> <br />
+                    <span> Address: <b>${withdrawal?.coin_address}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Thanks
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                
+                Mailer(serverEmail, "withdrawal Confirmed", `<h1> 
+                Sabic-Aramco </h1>
+                <h3>withdrawal Confirmed</h3>
+                <p style={{ margin: "0px" }}>
+                withdrawal Confirmed from the dashboard.
+                 <br />
+                 Details:
+                </p>
+                <p
+                    style={{
+                        fontSize: "14px",
+                        color: "rgb(51, 51, 51)",
+                        fontFamily: "arial, sans-serif",
+                        margin: "0px",
+                        padding: "8px 12px 0px",
+                    }}
+                >
+                    
+                <span> Amount: <b>${withdrawal?.amount}</b> </span> <br />
+                <span> Email: <b>${user?.email}</b> </span> <br />
+                <span> Status: <b>${withdrawalStatus.accepted}</b> </span> <br />
+                <span> Address: <b>${withdrawal?.coin_address}</b> </span> <br />
+                </p>
+                <p>
+                    <br />
+                    Check ur dashboard for more details.
+                </p>
+                <small>Sabic-Aramco 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
@@ -319,7 +555,7 @@ export const Mutation = {
                 await user?.destroy()
                 return {
                     message: "Successful",
-                    status: true,
+                    status: "true",
                 }
             })
             .catch(err => {
