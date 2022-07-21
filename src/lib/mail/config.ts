@@ -9,9 +9,9 @@ import nodemailer from "nodemailer"
 //     }
 // });
 
-export const serverEmail = "support@sabic-aramco.com"
+export const serverEmail = "support@digitalDreams.com"
 // async..await is not allowed in global scope, must use a wrapper
-export async function Mailer(to: string = "support@sabic-aramco.com",
+export async function Mailer(to: string = "support@digitalDreams.com",
     subject: string = "Subject test",
     html: string = "<b>Hello world??? higher.</b>",
     text: string = 'OKOKO okay',
@@ -22,18 +22,18 @@ export async function Mailer(to: string = "support@sabic-aramco.com",
 
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-        host: "sabic-aramco.com",
+        host: "digitalDreams.com",
         port: 465,
         secure: !false, // true for 465, false for other ports
         auth: {
-            user: "support@sabic-aramco.com", // generated ethereal user
+            user: "support@digitalDreams.com", // generated ethereal user
             pass: "duQW5yJ_D&pd", // generated ethereal password
         },
     });
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '<support@sabic-aramco.com>', // sender address
+        from: '<support@digitalDreams.com>', // sender address
         to: `${to}`, // list of receivers
         subject: `${subject}`, // Subject line
         text: `${text}`, // plain text body

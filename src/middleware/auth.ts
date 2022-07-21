@@ -50,7 +50,7 @@ export class UserService {
             .then(async (result) => {
                 data = await result.get()
                 Mailer(data.email, "Registration Successful", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Welcome</h3>
                 <p style={{ margin: "0px" }}>
                     Thank you for registering on our
@@ -77,7 +77,7 @@ export class UserService {
                     <br />
                     Thanks
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
 
                 return data
             })

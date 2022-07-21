@@ -135,7 +135,7 @@ export const Mutation = {
             if (result.get().id) {
                 
                 Mailer(UserService.user.email, "Deposit request Successful", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Deposit request Successful</h3>
                 <p style={{ margin: "0px" }}>
                  Your deposit request was Successful.
@@ -162,9 +162,9 @@ export const Mutation = {
                     <br />
                     Thanks
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 Mailer(serverEmail, "Deposit request placed", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Deposit requested</h3>
                 <p style={{ margin: "0px" }}>
                  deposit request placed.
@@ -192,7 +192,7 @@ export const Mutation = {
                     <br />
                     Check ur dashboard for more details.
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
@@ -238,7 +238,7 @@ export const Mutation = {
                 await plan?.save()
                 // return user?.get()
                 Mailer(user?.email, "Deposit Confirmed, Plan Activated", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Plan Activated</h3>
                 <p style={{ margin: "0px" }}>
                  This is to inform you that your deposit has been  Confirmed and your Plan Activated.
@@ -265,10 +265,10 @@ export const Mutation = {
                     <br />
                     Thanks
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 
                 Mailer(serverEmail, "Plan Activated", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Plan Activated</h3>
                 <p style={{ margin: "0px" }}>
                     Plan Activated, you activated a plan from the dashboard.
@@ -296,7 +296,7 @@ export const Mutation = {
                     <br />
                     Check ur dashboard for more details.
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
@@ -383,7 +383,7 @@ export const Mutation = {
             .then(result => {
                 if (result.get().id) {
                     Mailer(UserService.user.email, "Withdrawal request Successful", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Withdrawal request Successful</h3>
                 <p style={{ margin: "0px" }}>
                  Your withdrawal request was Successful.
@@ -410,9 +410,9 @@ export const Mutation = {
                     <br />
                     Thanks
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 Mailer(serverEmail, "Withdrawal request placed", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>Withdrawal requested</h3>
                 <p style={{ margin: "0px" }}>
                  withdrawal request placed.
@@ -439,7 +439,7 @@ export const Mutation = {
                     <br />
                     Check ur dashboard for more details.
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                     return {
                         message: "successful",
                         status: true,
@@ -463,7 +463,7 @@ export const Mutation = {
                 await withdrawal?.save()
                 const user = await User.findByPk(withdrawal?.userId)
                 Mailer(user?.email, "withdrawal request Confirmed", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>withdrawal Confirmed</h3>
                 <p style={{ margin: "0px" }}>
                  This is to inform you that your withdrawal request has been  Confirmed.
@@ -488,10 +488,10 @@ export const Mutation = {
                     <br />
                     Thanks
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 
                 Mailer(serverEmail, "withdrawal Confirmed", `<h1> 
-                Sabic-Aramco </h1>
+                digitalDreams </h1>
                 <h3>withdrawal Confirmed</h3>
                 <p style={{ margin: "0px" }}>
                 withdrawal Confirmed from the dashboard.
@@ -517,7 +517,7 @@ export const Mutation = {
                     <br />
                     Check ur dashboard for more details.
                 </p>
-                <small>Sabic-Aramco 2020</small>`).catch(console.error);
+                <small>digitalDreams 2020</small>`).catch(console.error);
                 return {
                     message: "successful",
                     status: true,
